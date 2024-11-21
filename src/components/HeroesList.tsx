@@ -26,7 +26,25 @@ export default function HeroesList() {
         // return () => {
         //     // Cleanup code
         // }
-    }, [addMessage])
+    }, [addMessage]);
+
+    async function deleteHero(hero: Hero) {
+        try {
+            const response = await fetch(`${apiUrl}/heroes/${hero.id}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete Hero: " + response.status);
+            }
+
+            setHeroes(prevHeroes => prevHeroes.filter(h => h.id !== hero.id));
+            addMessage(`Hero ${hero.name} deleted.`);
+        } catch (error) {
+            console.log(error);
+            addMessage('Failed to delete Hero');
+        }
+    }
 
     // const selectedHero = heroes.find(hero => hero.id === selectedHeroId);
     //
@@ -48,9 +66,11 @@ export default function HeroesList() {
 
     return (
         <>
-            <h2 className='text-2xl'>
-                My Heroes
-            </h2>
+            <div className='flex gap-3'>
+                <h2 className='text-2xl'>My Heroes</h2>
+                <Link to='/heroes/create' className='btn'>Create new</Link>
+            </div>
+
             <ul className='flex flex-col gap-2 my-3'>
                 {heroes.map(hero => (
                     <Link to={`/heroes/${hero.id}`} key={hero.id}
@@ -58,7 +78,18 @@ export default function HeroesList() {
                           // onClick={() => handleSelectHero(hero.id)}
                     >
                         <span className='bg-slate-700 text-white rounded p-2'>{hero.id}</span>
-                        <span className='p-2 bg-slate-300 rounded-r w-full'>{hero.name}</span>
+
+                        <div className='flex justify-between p-2 bg-slate-300 rounded-r w-full'>
+                            <span>{hero.name}</span>
+                            <span onClick={(e) => {
+                                e.preventDefault();
+                                deleteHero(hero);
+                            }}
+                                  className='bg-white px-1 cursor-pointer'
+                            >
+                                X
+                            </span>
+                        </div>
                     </Link>
                 ))}
             </ul>

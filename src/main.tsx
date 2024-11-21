@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard.tsx";
 import HeroesList from "./components/HeroesList.tsx";
 import HeroDetail from "./components/HeroDetail.tsx";
 import {MessageProvider} from "./context/MessageContext.tsx";
+import HeroForm from "./components/HeroForm.tsx";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
             { path: '/dashboard', element: <Dashboard /> },
             { path: '/heroes', element: <HeroesList /> },
             { path: '/heroes/:id', element: <HeroDetail /> },
+            { path: '/heroes/create', element: <HeroForm /> },
         ]
     }
 ])

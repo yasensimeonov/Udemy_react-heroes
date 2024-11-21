@@ -1,7 +1,8 @@
-import {FormEvent, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Hero} from "../types/hero.ts";
 import {useParams} from "react-router-dom";
 import {useMessages} from "../context/MessageContext.tsx";
+import HeroForm from "./HeroForm.tsx";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -44,33 +45,6 @@ export default function HeroDetail(
     //     setHero({...hero, name: event.target.value});
     // }
 
-    const onSubmit = async (event: FormEvent<HTMLFormElement>)=> {
-        event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
-        const url = `${apiUrl}/heroes/${hero.id}`;
-
-        // console.log(formData.get('name'));
-
-        try {
-            const response = await fetch(url, {
-                method: 'PUT',
-                body: JSON.stringify({name: formData.get('name')})
-            });
-
-            if (!response.ok) {
-                throw new Error('Request failed: ' + response.statusText);
-            }
-
-            const data = await response.json();
-            addMessage(`Hero ${hero.name} updated to ${data.name}.`);
-            setHero(data);
-        } catch(error) {
-            console.log(error);
-            addMessage('Failed to update hero');
-        }
-    }
-
     return (
         <>
             <h2 className='text-2xl'>Details</h2>
@@ -82,25 +56,7 @@ export default function HeroDetail(
                 <span className='uppercase'>{hero.name}</span>
             </div>
             <div className='flex flex-col gap-2 mt-3 border-t'>
-                <form onSubmit={onSubmit}>
-                    <label>Hero name</label>
-                    <div className='flex gap-3'>
-                        <input
-                            type='text'
-                            name='name'
-                            placeholder='name'
-                            className='border border-gray-300 rounded-lg p-2 w-1/4'
-                            // value={hero.name}
-                            // onChange={handleNameChange}
-                            defaultValue={hero.name}
-                        />
-                        <button type='submit' className='btn'>
-                            Submit
-                        </button>
-                    </div>
-                </form>
-
-
+                <HeroForm hero={hero} setHero={setHero} />
             </div>
         </>
     )
